@@ -1,0 +1,45 @@
+{
+  "period_start": "2026-05-11",
+  "period_end": "2026-05-17",
+  "ranking_mode": "positive_public_list",
+  "manager_scores": [
+    {
+      "score_id": "score_20260517_liming",
+      "owner_id": "owner_liming",
+      "owner_name": "李明",
+      "department": "商品运营",
+      "period_start": "2026-05-11",
+      "period_end": "2026-05-17",
+      "problem_discovery_score": 118.0,
+      "opportunity_discovery_score": 86.0,
+      "solution_quality_score": 88.0,
+      "achievement_score": 76.0,
+      "review_learning_score": 70.0,
+      "total_score": 91.0,
+      "rank": 1,
+      "ranking_bucket": "overall",
+      "representative_cases": [
+        {
+          "case_type": "problem",
+          "title": "提前识别 QD-DF-102 主推款断货风险",
+          "evidence_ref": "prob_20260515_001",
+          "value_level": "S"
+        },
+        {
+          "case_type": "opportunity",
+          "title": "提出 QD-DF-088 百亿补贴清仓机会",
+          "evidence_ref": "opp_20260515_001",
+          "value_level": "A"
+        }
+      ],
+      "public_summary": "本周对主推款库存风险和清仓机会的识别较及时，方案有责任人、时间和验证指标。",
+      "private_notes": "S/P0 事项需人工确认后再进入正式绩效材料。",
+      "data_completeness": "partial",
+      "needs_human_review": true
+    }
+  ],
+  "best_problem_discoverer": "李明",
+  "best_opportunity_discoverer": "李明",
+  "best_solution": "QD-DF-102 补货与预售承接方案",
+  "best_achievement": "质量问题归类与详情页尺码说明更新"
+}

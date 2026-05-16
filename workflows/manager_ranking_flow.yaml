@@ -1,0 +1,61 @@
+name: manager_ranking_flow
+description: Calculate manager contribution scores and positive rankings from extracted business items.
+inputs:
+  - problems
+  - opportunities
+  - solutions
+  - achievements
+  - weekly_reports
+  - period_start
+  - period_end
+outputs:
+  - manager_scores
+  - overall_ranking
+  - best_problem_discoverer
+  - best_opportunity_discoverer
+  - best_solution
+  - best_achievement
+steps:
+  - id: load_rules
+    action: read_reference
+    path: ../references/manager-ranking-rules.md
+  - id: aggregate_by_owner
+    action: group_items_by_owner
+    rules:
+      - Exclude unknown owners from public ranking.
+      - Keep unknown owner cases in private review list.
+  - id: score_problem_discovery
+    action: calculate_problem_score
+    formula: value_base_score * urgency_multiplier + early_warning_bonus + evidence_bonus
+  - id: score_opportunity_discovery
+    action: calculate_opportunity_score
+    formula: value_base_score * execution_window_multiplier + executability_bonus + timing_bonus
+  - id: score_solutions
+    action: calculate_solution_quality
+    reference: ../references/scoring-rubric.md
+  - id: score_achievements
+    action: calculate_achievement_score
+    reference: ../references/scoring-rubric.md
+  - id: score_review_learning
+    action: calculate_review_learning_score
+    rules:
+      - Award concise复盘 with evidence and reusable insight.
+      - Do not reward generic reflection.
+  - id: normalize_and_cap
+    action: apply_anti_gaming_rules
+    rules:
+      - Do not rank by count only.
+      - Problem discovery contribution should not exceed 40% after normalization.
+  - id: rank_positive_lists
+    action: produce_rankings
+    rules:
+      - Public output positive lists only.
+      - Every ranked owner needs representative_cases.
+  - id: validate_schema
+    action: validate_against_schema
+    schema: ../schemas/manager_score.schema.json
+human_review:
+  required_when:
+    - data_completeness is insufficient
+    - ranking will influence performance evaluation
+    - owner identity is ambiguous

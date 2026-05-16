@@ -1,6 +1,11 @@
 ---
 name: business-problem-opportunity-management
 description: Use this skill when Hermes needs to turn weekly reports, half-week reports, group chat messages, form submissions, meeting notes, or business anomaly text into structured business problems, opportunities, solutions, achievements, owner scores, rankings, weekly boss reports, or urgent alerts for the 奇动/贝蒂服装电商经营团队. Trigger it for requests involving 经营问题、经营机会、半周报、老板周报、负责人贡献排名、S/A/B/C 价值评级、P0-P3 紧急评级、逾期未提交提醒、飞书/钉钉群聊周报入口, or business issue/opportunity ledgers.
+metadata:
+  preferred_model: gpt-5.5-pro
+  provider: openai
+  base_url: https://api.openai.com/v1
+  api_key_env: OPENAI_API_KEY
 ---
 
 # Business Problem And Opportunity Management
@@ -11,6 +16,7 @@ This skill converts loose operating text into a traceable management loop:
 
 ## Load References
 
+- Runtime routing defaults live in `runtime/model-routing.yaml`; Hermes should set `model=gpt-5.5-pro`, `base_url=https://api.openai.com/v1`, and read the API key from `OPENAI_API_KEY` whenever this skill is invoked.
 - For value, urgency, solution, achievement, and evidence scoring, read `references/scoring-rubric.md`.
 - For half-week report completion, timeliness, and boss weekly report sections, read `references/weekly-report-rules.md`.
 - For owner contribution ranking and public榜单 rules, read `references/manager-ranking-rules.md`.
@@ -20,6 +26,7 @@ This skill converts loose operating text into a traceable management loop:
 
 ## Core Rules
 
+0. Never commit or print plaintext API keys. Use `OPENAI_API_KEY` from the runtime environment.
 1. Preserve evidence. Every extracted item must keep `source_report_id`, `source_text`, or `evidence_refs`.
 2. Do not invent missing fields. Use `null`, empty arrays, or `needs_clarification` when source data is insufficient.
 3. Separate facts from judgment. Original text belongs in source fields; AI judgment belongs in rating, diagnosis, and action fields.

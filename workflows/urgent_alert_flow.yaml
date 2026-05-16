@@ -1,0 +1,69 @@
+name: urgent_alert_flow
+description: Detect and prepare urgent alerts for boss, owner, HR, or direct manager.
+inputs:
+  - problems
+  - opportunities
+  - weekly_reports
+  - completion_stats
+  - current_date
+outputs:
+  - alert_events
+  - boss_alert_digest
+  - owner_reminders
+steps:
+  - id: load_alert_rules
+    action: read_reference
+    path: ../references/urgent-alert-rules.md
+  - id: collect_candidates
+    action: filter_alert_candidates
+    triggers:
+      - P0
+      - S_level
+      - severely_overdue
+      - repeated_problem
+      - high_value_short_window_opportunity
+      - platform_penalty
+      - major_complaint
+      - hero_product_stockout
+  - id: verify_evidence
+    action: check_evidence_strength
+    rules:
+      - Alerts need source text or metric evidence.
+      - Weak evidence high-severity alert requires human review.
+  - id: assign_severity
+    action: classify_alert_severity
+    levels:
+      - critical
+      - high
+      - medium
+      - low
+  - id: deduplicate
+    action: prevent_repeated_noise
+    keys:
+      - item_id
+      - owner_id
+      - alert_type
+      - date
+  - id: generate_message
+    action: render_alert_message
+    required_parts:
+      - title
+      - why_it_matters
+      - evidence
+      - recommended_action
+      - responsible_person
+      - deadline
+      - boss_decision_required
+  - id: route_alert
+    action: choose_recipient
+    rules:
+      - critical goes to boss after human review.
+      - high goes to owner and optional boss digest.
+      - overdue_4d goes to owner.
+      - overdue_7d goes to owner, direct manager, and HR.
+human_review:
+  default_required_for:
+    - P0
+    - S_level
+    - boss_push
+    - performance_or_hr_consequence

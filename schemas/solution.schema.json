@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BusinessSolution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["solution_id", "source_report_id", "summary", "source_text", "action_steps", "quality_score", "needs_human_review"],
+  "properties": {
+    "solution_id": { "type": "string" },
+    "source_report_id": { "type": "string" },
+    "related_problem_id": { "type": ["string", "null"] },
+    "related_opportunity_id": { "type": ["string", "null"] },
+    "owner_id": { "type": ["string", "null"] },
+    "owner_name": { "type": ["string", "null"] },
+    "summary": { "type": "string" },
+    "source_text": { "type": "string" },
+    "action_steps": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "responsible_person": { "type": ["string", "null"] },
+    "responsible_department": { "type": ["string", "null"] },
+    "deadline": { "type": ["string", "null"], "format": "date" },
+    "validation_metric": { "type": ["string", "null"] },
+    "expected_result": { "type": ["string", "null"] },
+    "risk_plan": { "type": ["string", "null"] },
+    "reusable_as_sop": { "type": "boolean", "default": false },
+    "score_breakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root_cause": { "type": "number", "minimum": 0, "maximum": 15 },
+        "data_support": { "type": "number", "minimum": 0, "maximum": 15 },
+        "action_clarity": { "type": "number", "minimum": 0, "maximum": 20 },
+        "owner_clarity": { "type": "number", "minimum": 0, "maximum": 10 },
+        "deadline_clarity": { "type": "number", "minimum": 0, "maximum": 10 },
+        "expected_result": { "type": "number", "minimum": 0, "maximum": 10 },
+        "risk_plan": { "type": "number", "minimum": 0, "maximum": 10 },
+        "reusable_value": { "type": "number", "minimum": 0, "maximum": 10 }
+      }
+    },
+    "quality_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "quality_level": { "type": "string", "enum": ["excellent", "good", "usable", "weak"] },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "needs_human_review": { "type": "boolean" }
+  }
+}

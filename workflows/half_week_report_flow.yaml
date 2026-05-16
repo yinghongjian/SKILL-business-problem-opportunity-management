@@ -1,0 +1,49 @@
+name: half_week_report_flow
+description: Track half-week report completion, timeliness, overdue owners, and weekly boss discipline summary.
+inputs:
+  - owner_profiles
+  - weekly_reports
+  - period_start
+  - period_end
+  - current_date
+outputs:
+  - completion_stats
+  - overdue_alerts
+  - boss_report_discipline_section
+steps:
+  - id: load_owner_scope
+    action: read_active_required_owners
+    rules:
+      - Use HR owner list as official denominator.
+      - If owner list is missing, use reported owners and set test_mode=true.
+  - id: normalize_report_dates
+    action: normalize_weekly_report_records
+    schema: ../schemas/weekly_report.schema.json
+    rules:
+      - One owner can have multiple reports.
+      - Same owner same date counts as one valid submission day for discipline.
+  - id: compute_completion
+    action: calculate_completion_rate
+    formula: owners_with_at_least_two_valid_submission_days / active_required_owners
+  - id: compute_timeliness
+    action: calculate_timeliness_rate
+    rules:
+      - No gap over 4 days is timely.
+      - recent_last_submit_days <= 3 means normal.
+      - recent_last_submit_days == 4 means almost_overdue.
+      - recent_last_submit_days > 4 means overdue.
+      - recent_last_submit_days > 7 means severely_overdue.
+  - id: generate_owner_reminders
+    action: create_alert_candidates
+    rules:
+      - overdue owners receive self reminder.
+      - severely_overdue owners notify direct manager and HR.
+      - two consecutive failed weeks enter boss weekly report.
+  - id: produce_summary
+    action: render_summary
+    format: json_and_chinese_summary
+human_review:
+  required_when:
+    - owner_match_status is unknown_owner
+    - output will be used for HR penalty
+    - consecutive_failed_weeks >= 2

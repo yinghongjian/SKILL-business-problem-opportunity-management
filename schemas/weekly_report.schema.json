@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WeeklyReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_id", "owner_name", "report_time", "raw_source"],
+  "properties": {
+    "report_id": { "type": "string" },
+    "owner_id": { "type": ["string", "null"] },
+    "owner_name": { "type": "string" },
+    "department": { "type": ["string", "null"] },
+    "report_time": { "type": "string", "format": "date-time" },
+    "period_start": { "type": ["string", "null"], "format": "date" },
+    "period_end": { "type": ["string", "null"], "format": "date" },
+    "problem_text": { "type": "string", "default": "" },
+    "solution_text": { "type": "string", "default": "" },
+    "opportunity_text": { "type": "string", "default": "" },
+    "action_text": { "type": "string", "default": "" },
+    "achievement_text": { "type": "string", "default": "" },
+    "next_focus_text": { "type": "string", "default": "" },
+    "support_needed": { "type": "string", "default": "" },
+    "need_boss": { "type": "boolean", "default": false },
+    "source_type": {
+      "type": "string",
+      "enum": ["hr_summary_file", "single_report_message", "form_submission", "manual_import", "meeting_note", "business_message", "scheduled_scan"]
+    },
+    "platform_source": {
+      "type": ["string", "null"],
+      "enum": ["feishu", "dingtalk", "webhook", "manual_upload", "database", "local_file", null]
+    },
+    "group_id": { "type": ["string", "null"] },
+    "message_id": { "type": ["string", "null"] },
+    "attachment_id": { "type": ["string", "null"] },
+    "submitted_by": { "type": ["string", "null"] },
+    "raw_source": { "type": "string" },
+    "dedupe_key": { "type": ["string", "null"] },
+    "owner_match_status": {
+      "type": "string",
+      "enum": ["matched", "unknown_owner", "possible_delegate_submission", "test_mode"],
+      "default": "matched"
+    },
+    "needs_clarification": { "type": "boolean", "default": false },
+    "clarification_questions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    }
+  }
+}

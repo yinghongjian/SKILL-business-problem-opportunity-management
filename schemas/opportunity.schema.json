@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BusinessOpportunity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["opportunity_id", "source_report_id", "summary", "source_text", "business_module", "value_level", "urgency_level", "needs_human_review"],
+  "properties": {
+    "opportunity_id": { "type": "string" },
+    "source_report_id": { "type": "string" },
+    "owner_id": { "type": ["string", "null"] },
+    "owner_name": { "type": ["string", "null"] },
+    "summary": { "type": "string" },
+    "source_text": { "type": "string" },
+    "business_module": {
+      "type": "string",
+      "enum": ["商品", "渠道", "库存", "视觉", "客服", "供应链", "财务", "投放", "直播", "内容", "其他"]
+    },
+    "opportunity_type": {
+      "type": "string",
+      "enum": ["平台资源", "竞品断货", "热点趋势", "库存去化", "爆款增长", "利润优化", "投放优化", "视觉转化", "客户体验", "流程效率", "其他"]
+    },
+    "platform": { "type": ["string", "null"] },
+    "category": { "type": ["string", "null"] },
+    "sku_code": { "type": ["string", "null"] },
+    "expected_impact": { "type": ["string", "null"] },
+    "capture_window": { "type": ["string", "null"] },
+    "required_resources": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "evidence_strength": { "type": "string", "enum": ["strong", "medium", "weak"], "default": "weak" },
+    "value_level": { "type": "string", "enum": ["S", "A", "B", "C"] },
+    "urgency_level": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+    "rating_reason": { "type": "string" },
+    "suggested_action": { "type": ["string", "null"] },
+    "responsible_department": { "type": ["string", "null"] },
+    "responsible_person": { "type": ["string", "null"] },
+    "deadline": { "type": ["string", "null"], "format": "date" },
+    "need_boss": { "type": "boolean", "default": false },
+    "status": { "type": "string", "enum": ["open", "in_progress", "captured", "missed", "closed"], "default": "open" },
+    "needs_human_review": { "type": "boolean" }
+  }
+}

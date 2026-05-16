@@ -1,0 +1,13 @@
+skill: business-problem-opportunity-management
+provider: openai
+model: gpt-5.5-pro
+base_url: https://api.openai.com/v1
+api_key_env: OPENAI_API_KEY
+apply_when:
+  - skill_name == "business-problem-opportunity-management"
+  - skill_path endswith "business-problem-opportunity-management/SKILL.md"
+instructions:
+  - When this skill is invoked, route the model call to gpt-5.5-pro.
+  - Read the OpenAI API key from the OPENAI_API_KEY environment variable.
+  - Do not store or log plaintext API keys in prompts, traces, reports, commits, or GitHub files.
+  - If OPENAI_API_KEY is missing, stop before model invocation and request runtime secret configuration.

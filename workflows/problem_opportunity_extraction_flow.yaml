@@ -1,0 +1,71 @@
+name: problem_opportunity_extraction_flow
+description: Extract structured problems, opportunities, solutions, and achievements from reports, group messages, or business notes.
+inputs:
+  - raw_text
+  - weekly_reports
+  - owner_profiles
+  - source_metadata
+outputs:
+  - problems
+  - opportunities
+  - solutions
+  - achievements
+  - clarification_requests
+steps:
+  - id: classify_input
+    action: classify_source
+    allowed_types:
+      - weekly_report_batch
+      - single_half_week_report
+      - business_message
+      - meeting_note
+  - id: normalize_report
+    action: map_to_weekly_report_schema
+    schema: ../schemas/weekly_report.schema.json
+    rules:
+      - Preserve raw_source.
+      - Do not invent missing name, date, department, or owner.
+      - Mark unknown owner for HR confirmation.
+  - id: split_items
+    action: extract_business_items
+    rules:
+      - Split independent items.
+      - Distinguish problem, risk, opportunity, solution, achievement, and todo.
+      - Keep source_text for every item.
+  - id: diagnose_business_context
+    action: tag_context
+    fields:
+      - business_module
+      - platform
+      - category
+      - sku_code
+      - impact_metrics
+      - responsible_department
+  - id: rate_value_urgency
+    action: apply_scoring_rubric
+    reference: ../references/scoring-rubric.md
+    rules:
+      - S/P0 requires needs_human_review=true.
+      - Weak evidence cannot receive S unless human review is required.
+  - id: create_suggested_actions
+    action: generate_action_plan
+    required_parts:
+      - what_to_do
+      - owner_or_department
+      - deadline
+      - validation_metric
+      - cross_team_need
+      - boss_need
+  - id: validate_outputs
+    action: validate_against_schemas
+    schemas:
+      - ../schemas/problem.schema.json
+      - ../schemas/opportunity.schema.json
+      - ../schemas/solution.schema.json
+failure_modes:
+  - condition: source_text_too_short
+    action: return_needs_clarification
+  - condition: owner_not_matched
+    action: mark_unknown_owner
+  - condition: high_rating_without_evidence
+    action: downgrade_or_require_human_review

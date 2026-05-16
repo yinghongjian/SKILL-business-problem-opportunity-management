@@ -17,18 +17,23 @@
 ## Hermes 使用步骤
 
 1. 读取 `.agents/skills/business-problem-opportunity-management/SKILL.md` 判断任务类型。
-2. 按任务加载对应 reference：
+2. 调用该 Skill 时读取 `runtime/model-routing.yaml`，默认使用：
+   - `model`: `gpt-5.5-pro`
+   - `base_url`: `https://api.openai.com/v1`
+   - `api_key_env`: `OPENAI_API_KEY`
+3. 在运行环境设置 `OPENAI_API_KEY`，不要把明文 key 写入仓库、Prompt、日志或报告。
+4. 按任务加载对应 reference：
    - 评级和打分：`references/scoring-rubric.md`
    - 周报纪律和老板周报：`references/weekly-report-rules.md`
    - 负责人排名：`references/manager-ranking-rules.md`
    - 紧急提醒：`references/urgent-alert-rules.md`
-3. 按 workflow 执行：
+5. 按 workflow 执行：
    - 半周报跟进：`workflows/half_week_report_flow.yaml`
    - 事项提取：`workflows/problem_opportunity_extraction_flow.yaml`
    - 负责人排名：`workflows/manager_ranking_flow.yaml`
    - 紧急提醒：`workflows/urgent_alert_flow.yaml`
-4. 输出前用 `schemas/` 中的 JSON Schema 校验字段。
-5. 需要示例时读取 `examples/`。
+6. 输出前用 `schemas/` 中的 JSON Schema 校验字段。
+7. 需要示例时读取 `examples/`。
 
 ## 关键约束
 
@@ -37,3 +42,4 @@
 - 不允许凭空补齐负责人、金额、日期、款号、平台或经营结果。
 - 排名按经营价值和证据评分，不按提交数量简单排序。
 - 对外公开只发正向榜单；逾期和低质量问题走人事/直属负责人私域处理。
+- API key 只允许通过环境变量注入；仓库只保留 `.env.example` 占位模板。
